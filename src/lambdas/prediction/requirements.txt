@@ -1,0 +1,6 @@
+python-dotenv
+pycaret==3.0.4
+pandas==1.5.3
+psycopg2-binary
+pydantic
+fastapi

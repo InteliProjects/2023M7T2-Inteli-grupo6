@@ -1,0 +1,8 @@
+pandas
+gcc7
+pycaret[standard]
+uvicorn
+pydantic
+fastapi
+requests
+gradio

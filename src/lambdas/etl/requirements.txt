@@ -1,0 +1,11 @@
+pandas
+fastapi
+numpy
+uuid==1.30
+scipy
+psycopg2
+pyarrow
+python-dotenv
+scipy
+psycopg2-binary
+boto3

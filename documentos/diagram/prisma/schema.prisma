@@ -1,0 +1,127 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator erd {
+  provider                  = "prisma-erd-generator"
+  output                    = "../ERD.svg"
+  includeRelationFromFields = true
+  theme                     = "default"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  roles     Role[]   @default([USER])
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  flightFiles FlightFile[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model FlightFile {
+  id       String @id @default(cuid())
+  name     String
+  fileName String
+  s3Path   String
+
+  userId String
+  user   User?  @relation(fields: [userId], references: [id])
+
+  predictionResult String?
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  flightData FlightData[]
+  Predicted  Predicted[]
+}
+
+model FlightData {
+  id                         String      @id @default(cuid())
+  aircraftSerNum1            Int
+  amscChBasHealthStatus1     Decimal     @db.Decimal(precision: 40, scale: 20)
+  amscChBasHealthStatus2     Decimal     @db.Decimal(precision: 40, scale: 20)
+  amscHprsovDrivF1           Decimal     @db.Decimal(precision: 40, scale: 20)
+  amscHprsovDrivF2           Decimal     @db.Decimal(precision: 40, scale: 20)
+  amscPrsovDrivF1            Decimal     @db.Decimal(precision: 40, scale: 20)
+  amscPrsovDrivF2            Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedLowPressF1         Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedLowPressF2         Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedLowTempF1          Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedLowTempF2          Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedOverPressF1        Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedOverPressF2        Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedOverTempF1         Decimal     @db.Decimal(precision: 40, scale: 20)
+  basBleedOverTempF2         Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedAcsBleedConfigStatus1 Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedAcsBleedConfigStatus2 Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedFavTmCmd1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedFavTmCmd2             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedFavTmFbk1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedFavTmFbk2             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedHprsovCmdStatus1      Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedHprsovCmdStatus2      Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedHprsovOpPosStatus1    Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedHprsovOpPosStatus2    Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedMonPress1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedMonPress2             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOnStatus1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOnStatus2             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOutTemp1              Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOutTemp2              Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOutTempTarget1        Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOutTempTarget2        Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOverpressCas1         Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedOverpressCas2         Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrecoolDiffPress1     Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrecoolDiffPress2     Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovClPosStatus1     Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovClPosStatus2     Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovFbk1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovFbk2             Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovOpPosStatus1     Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovOpPosStatus2     Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovTmCmd1           Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedPrsovTmCmd2           Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedSingleOperation1      Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedSingleOperation2      Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedSwPress1              Decimal     @db.Decimal(precision: 40, scale: 20)
+  bleedSwPress2              Decimal     @db.Decimal(precision: 40, scale: 20)
+  correctedCoreSpeed1a       Decimal     @db.Decimal(precision: 40, scale: 20)
+  correctedCoreSpeed3a       Decimal     @db.Decimal(precision: 40, scale: 20)
+  correctedN1Speed1a         Decimal     @db.Decimal(precision: 40, scale: 20)
+  correctedN1Speed3a         Decimal     @db.Decimal(precision: 40, scale: 20)
+  message0418DAA1            Float
+  message0422DAA1            Float
+  messageInhibitPhases1      Decimal     @db.Decimal(precision: 40, scale: 20)
+  phaseOfFlight1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  phaseOfFlightNavigation1   Decimal     @db.Decimal(precision: 40, scale: 20)
+  sfyBasFaultWord1Bit131     Decimal     @db.Decimal(precision: 40, scale: 20)
+  sfyBasFaultWord1Bit132     Decimal     @db.Decimal(precision: 40, scale: 20)
+  pressAltitude1             Decimal     @db.Decimal(precision: 40, scale: 20)
+  pressAltitude2             Decimal     @db.Decimal(precision: 40, scale: 20)
+  pressAltitude3             Decimal     @db.Decimal(precision: 40, scale: 20)
+  pressAltitude4             Decimal     @db.Decimal(precision: 40, scale: 20)
+  wOW1                       Decimal     @db.Decimal(precision: 40, scale: 20)
+  wOW3                       Decimal     @db.Decimal(precision: 40, scale: 20)
+  createdAt                  DateTime    @default(now()) @db.Timestamp
+  FlightFile                 FlightFile? @relation(fields: [flightFileId], references: [id])
+  flightFileId               String?
+}
+
+model Predicted {
+  id           String      @id @default(cuid())
+  output       String
+  flightFileId String
+  flightFile   FlightFile? @relation(fields: [flightFileId], references: [id])
+  createdAt    DateTime    @default(now()) @db.Timestamp
+}

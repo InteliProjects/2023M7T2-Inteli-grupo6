@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+coverage
+.prettierrc
+nodemon.json
+.git
+.gitignore
+LICENSE
+VERSION
+README.md
+Changelog.md
+Dockerfile
+dist
+node_modules
+coverage

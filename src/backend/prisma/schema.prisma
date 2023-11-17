@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  roles     Role[]   @default([USER])
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  flightFiles FlightFile[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model FlightFile {
+  id       String @id @default(cuid())
+  name     String
+  fileName String
+  s3Path   String
+
+  userId String
+  user   User?  @relation(fields: [userId], references: [id])
+
+  predictionResult String?
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  flightData FlightData[]
+  Predicted  Predicted[]
+}
+
+model FlightData {
+  id                         String      @id @default(cuid())
+  aircraftSerNum1            Int
+  amscChBasHealthStatus1     Float   
+  amscChBasHealthStatus2     Float   
+  amscHprsovDrivF1           Float   
+  amscHprsovDrivF2           Float   
+  amscPrsovDrivF1            Float   
+  amscPrsovDrivF2            Float   
+  basBleedLowPressF1         Float   
+  basBleedLowPressF2         Float   
+  basBleedLowTempF1          Float   
+  basBleedLowTempF2          Float   
+  basBleedOverPressF1        Float   
+  basBleedOverPressF2        Float   
+  basBleedOverTempF1         Float   
+  basBleedOverTempF2         Float   
+  bleedAcsBleedConfigStatus1 Float   
+  bleedAcsBleedConfigStatus2 Float   
+  bleedFavTmCmd1             Float   
+  bleedFavTmCmd2             Float   
+  bleedFavTmFbk1             Float   
+  bleedFavTmFbk2             Float   
+  bleedHprsovCmdStatus1      Float   
+  bleedHprsovCmdStatus2      Float   
+  bleedHprsovOpPosStatus1    Float   
+  bleedHprsovOpPosStatus2    Float   
+  bleedMonPress1             Float   
+  bleedMonPress2             Float   
+  bleedOnStatus1             Float   
+  bleedOnStatus2             Float   
+  bleedOutTemp1              Float   
+  bleedOutTemp2              Float   
+  bleedOutTempTarget1        Float   
+  bleedOutTempTarget2        Float   
+  bleedOverpressCas1         Float   
+  bleedOverpressCas2         Float   
+  bleedPrecoolDiffPress1     Float   
+  bleedPrecoolDiffPress2     Float   
+  bleedPrsovClPosStatus1     Float   
+  bleedPrsovClPosStatus2     Float   
+  bleedPrsovFbk1             Float   
+  bleedPrsovFbk2             Float   
+  bleedPrsovOpPosStatus1     Float   
+  bleedPrsovOpPosStatus2     Float   
+  bleedPrsovTmCmd1           Float   
+  bleedPrsovTmCmd2           Float   
+  bleedSingleOperation1      Float   
+  bleedSingleOperation2      Float   
+  bleedSwPress1              Float   
+  bleedSwPress2              Float   
+  correctedCoreSpeed1a       Float   
+  correctedCoreSpeed3a       Float   
+  correctedN1Speed1a         Float   
+  correctedN1Speed3a         Float   
+  messageInhibitPhases1      Float   
+  phaseOfFlight1             Float   
+  phaseOfFlightNavigation1   Float   
+  sfyBasFaultWord1Bit131     Float   
+  sfyBasFaultWord1Bit132     Float   
+  pressAltitude1             Float   
+  pressAltitude2             Float   
+  pressAltitude3             Float   
+  pressAltitude4             Float   
+  wOW1                       Float   
+  wOW3                       Float   
+  createdAt                  DateTime    @default(now()) @db.Timestamp
+  FlightFile                 FlightFile? @relation(fields: [flightFileId], references: [id])
+  flightFileId               String?
+}
+
+model Predicted {
+  id           String      @id @default(cuid())
+  output       String
+  flightFileId String
+  flightFile   FlightFile? @relation(fields: [flightFileId], references: [id])
+  createdAt    DateTime    @default(now()) @db.Timestamp
+}
